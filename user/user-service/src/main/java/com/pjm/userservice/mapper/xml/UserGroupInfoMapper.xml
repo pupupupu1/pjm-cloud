@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pjm.userservice.mapper.UserGroupInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pjm.userservice.entity.UserGroupInfo">
+        <id column="id" property="id"/>
+        <result column="user_group_name" property="userGroupName"/>
+        <result column="user_group_number" property="userGroupNumber"/>
+        <result column="user_group_creater_id" property="userGroupCreaterId"/>
+        <result column="user_group_num_of_people" property="userGroupNumOfPeople"/>
+        <result column="user_group_announcement" property="userGroupAnnouncement"/>
+        <result column="user_group_avatar_path" property="userGroupAvatarPath"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_group_name, user_group_number, user_group_creater_id, user_group_num_of_people, user_group_announcement, user_group_avatar_path
+    </sql>
+
+    <select id="userGroupList" resultMap="BaseResultMap">
+        select *
+        from user_group_info
+        where id in
+              (select user_group_id
+               from user_group_member_info
+               where user_group_member_id = #{userId,jdbcType=VARCHAR})
+    </select>
+
+</mapper>

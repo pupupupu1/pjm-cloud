@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pjm.circleoffriendservice.mapper.CircleOfFriendsCommentMapper">
+
+    <resultMap id="CircleOfFriendsCommentExt" type="com.pjm.circleoffriendservice.entityExt.CircleOfFriendsCommentExt">
+        <id column="id" property="id"/>
+        <result column="reply_id" property="replyId"/>
+        <result column="circle_id" property="circleId"/>
+        <result column="content" property="content"/>
+        <result column="version" property="version"/>
+        <result column="create_time" property="createTime"/>
+        <result column="user_account" property="userAccount"/>
+        <collection property="children" javaType="java.util.ArrayList"
+                    ofType="com.pjm.circleoffriendservice.entityExt.CircleOfFriendsCommentExt" column="ID"
+                    select="getByCircleId"/>
+    </resultMap>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pjm.circleoffriendservice.entity.CircleOfFriendsComment">
+        <id column="id" property="id"/>
+        <result column="reply_id" property="replyId"/>
+        <result column="circle_id" property="circleId"/>
+        <result column="content" property="content"/>
+        <result column="version" property="version"/>
+        <result column="create_time" property="createTime"/>
+        <result column="user_account" property="userAccount"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, reply_id, circle_id, content, version, create_time, user_account
+    </sql>
+    <select id="getByCircleId" parameterType="string" resultMap="CircleOfFriendsCommentExt">
+        select *
+        from circle_of_friends_comment
+        where reply_id = #{id}
+        order by create_time
+    </select>
+
+    <select id="getListByCircleId" resultMap="CircleOfFriendsCommentExt">
+        SELECT *
+        FROM circle_of_friends_comment
+        where circle_id = #{id}
+
+          and reply_id  is null
+
+        order by create_time
+    </select>
+</mapper>

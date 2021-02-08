@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pjm.circleoffriendservice.mapper.CircleOfFriendsInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pjm.circleoffriendservice.entity.CircleOfFriendsInfo">
+        <id column="id" property="id"/>
+        <result column="text_content" property="textContent"/>
+        <result column="pic_path" property="picPath"/>
+        <result column="user_account" property="userAccount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="forward_id" property="forwardId"/>
+        <result column="likes_num" property="likesNum"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, text_content, pic_path, user_account, create_time, forward_id, likes_num, version
+    </sql>
+
+</mapper>

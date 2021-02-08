@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pjm.userservice.mapper.UserFriendShipMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pjm.userservice.entity.UserFriendShip">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="friend_user_id" property="friendUserId"/>
+        <result column="related_status" property="relatedStatus"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, friend_user_id, related_status
+    </sql>
+
+    <select id="friendList" resultMap="BaseResultMap">
+        select user.*
+        from user_friend_ship user
+                 inner join user_friend_ship friend
+                            on user.user_id = friend.friend_user_id and user.friend_user_id = friend.user_id
+        where user.user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+    <select id="applyList" resultMap="BaseResultMap">
+        select *
+        from user_friend_ship
+        where friend_user_id = #{userId,jdbcType=VARCHAR}
+          and id not in (
+            select user.id
+            FROM user_friend_ship user
+                     INNER JOIN user_friend_ship friend
+                                ON user.user_id = friend.friend_user_id and user.friend_user_id = friend.user_id
+            WHERE friend.user_id = #{userId,jdbcType=VARCHAR}
+        )
+        order by create_time desc
+    </select>
+</mapper>

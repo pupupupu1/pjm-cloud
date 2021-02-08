@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pjm.nacosservice.mapper.WhiteListFilterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.pjm.nacosservice.entity.WhiteListFilter">
+        <id column="id" property="id" />
+        <result column="filter_code" property="filterCode" />
+        <result column="filter_name" property="filterName" />
+        <result column="filter_type" property="filterType" />
+        <result column="filter_parent_id" property="filterParentId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, filter_code, filter_name, filter_type, filter_parent_id
+    </sql>
+
+</mapper>
