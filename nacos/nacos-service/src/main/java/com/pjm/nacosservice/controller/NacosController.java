@@ -1,5 +1,6 @@
 package com.pjm.nacosservice.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.pjm.common.aop.cache.EnableCache;
 import com.pjm.common.aop.log.StartLog;
 import com.pjm.common.entity.ResponseEntity;
@@ -10,12 +11,14 @@ import com.pjm.msgstater.entity.Duanxin;
 import com.pjm.msgstater.service.EmailService;
 import com.pjm.msgstater.service.SmsService;
 import com.pjm.rabbitmqapi.entity.MessageMq;
+import com.pjm.rabbitmqapi.entity.MqLocalMessage;
 import com.pjm.rabbitmqapi.service.MqApiClient;
 import com.pjm.userapi.entity.UserApi;
 import com.pjm.userapi.service.UserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -107,5 +110,14 @@ public class NacosController {
     @EnableCache(key = "testKey22")
     public String testCache2() {
         return "hello world22";
+    }
+
+    @PostMapping("sendMqMsg2DB")
+    public String sendMqMsg2DB(String name) {
+        Map<String, String> map = new HashMap<>();
+        map.put("name", name);
+        mqApiClient.insertMsg(new MqLocalMessage().setId("user." + UuidUtil.next()).setTopicName("pjm.topic2")
+                .setQueueName("user.queue").setContext(JSON.toJSONString(map)));
+        return "success";
     }
 }

@@ -28,7 +28,7 @@ public class ScheduleJob extends Model<ScheduleJob> {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.INPUT)
     private String id;
     @ApiModelProperty(value = "class路径")
     private String classPath;

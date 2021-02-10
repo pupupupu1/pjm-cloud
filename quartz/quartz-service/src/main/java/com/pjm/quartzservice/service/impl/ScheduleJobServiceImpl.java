@@ -6,6 +6,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
+import com.pjm.common.exception.CustomException;
+import com.pjm.common.exception.PjmException;
+import com.pjm.common.util.common.UuidUtil;
 import com.pjm.quartzservice.componment.ScheduleUtils;
 import com.pjm.quartzservice.entity.ScheduleJob;
 import com.pjm.quartzservice.entityExt.ScheduleJobExt;
@@ -64,18 +67,19 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, Sched
     }
 
     @Override
-    public ResponseEntity<ScheduleJob> insertScheduleJob(ScheduleJob scheduleJob) throws SchedulerException {
+    public ResponseEntity<ScheduleJob> insertScheduleJob(ScheduleJob scheduleJob) {
         scheduleJob.setCreateTime(new Date());
+        scheduleJob.setId(UuidUtil.next());
+        scheduleJob.setStatus(Constant.NORMAL);
 //        scheduleJob.setCreater()
         insert(scheduleJob);
-//        try {
+        try {
             ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
             return new ResponseEntity<>(scheduleJob);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("error");
-//            throw new SchedulerException();
-//        }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new PjmException(500, e.getMessage());
+        }
     }
 
     @Override
