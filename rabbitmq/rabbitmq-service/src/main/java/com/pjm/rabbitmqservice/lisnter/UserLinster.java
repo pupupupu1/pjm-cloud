@@ -47,12 +47,12 @@ public class UserLinster {
         log.info("nacos被监听到了！{}", msg);
     }
 
-    @RabbitListener(queues = "user.queue")
-    public void pjmQueueListener1(Object msg) throws ClassNotFoundException, NoSuchMethodException {
-        Class c = Class.forName("com.pjm.userapi.service.UserClient");
-        c.getMethod("getUser");
-        log.info("user被监听到了！{}", msg);
-    }
+//    @RabbitListener(queues = "user.queue")
+//    public void pjmQueueListener1(Object msg) throws ClassNotFoundException, NoSuchMethodException {
+//        Class c = Class.forName("com.pjm.userapi.service.UserClient");
+//        c.getMethod("getUser");
+//        log.info("user被监听到了！{}", msg);
+//    }
 
     @RabbitListener(queues = "gateway-update")
     public void gateWayUpdateLinster(Message msg) {
