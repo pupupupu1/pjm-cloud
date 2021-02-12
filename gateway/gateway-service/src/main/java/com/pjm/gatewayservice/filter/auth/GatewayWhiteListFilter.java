@@ -42,9 +42,11 @@ public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
 
     @Override
     public void doFilter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        log.info("filterEnable：{}"+filterEnable);
+        log.info("filterEnable：{}" + filterEnable);
+        String applicationName = userUtil.getReqApplicationName(exchange);
+        String interfaceName = userUtil.getInterFaceName(exchange);
         if (!filterEnable) {
-            log.info("GatewayWhiteListFilter未开启");
+            log.info("GatewayLoginFilter未开启");
             if (this.next == null) {
                 return;
             } else {
@@ -52,33 +54,32 @@ public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
             }
 //            throw new CustomException("测试异常CustomException");
         }
-
-        Set<String> set = new HashSet<>();
-        set.add("pjm-service-nacos");
-        applicationNameSet = (Set<WhiteListFilter>) jedisUtil.getObject("cloud:cache:whiteList");
-        if (Objects.isNull(applicationNameSet)) {
-            applicationNameSet = nacosApiClient.getApplicationNameSet();
-            jedisUtil.setObject("cloud:cache:whiteList", applicationNameSet, 3600000);
-        }
+//        applicationNameSet = (Set<WhiteListFilter>) jedisUtil.getObject("pjm:cloud:cache:whiteList");
+//        if (Objects.isNull(applicationNameSet)) {
+//            applicationNameSet = nacosApiClient.getApplicationNameSet();
+//            jedisUtil.setObject("cloud:cache:whiteList", applicationNameSet, 3600000);
+//        }
+        applicationNameSet = nacosApiClient.getApplicationNameSet();
         System.out.println("进入WhiteListFilter");
-        List<WhiteListFilter> filterList = applicationNameSet.stream().filter(item -> Pattern.matches(item.getFilterCode(), userUtil.getReqApplicationName(exchange))).collect(Collectors.toList());
+        List<WhiteListFilter> filterList = applicationNameSet.stream().filter(item -> Pattern.matches(item.getFilterCode(), applicationName)).collect(Collectors.toList());
         if (filterList.size() > 0) {
             Set<WhiteListFilter> interfaceSet = new HashSet<>();
             for (int i = 0; i < filterList.size(); i++) {
-                interfaceSet.addAll((Set<WhiteListFilter>) jedisUtil.getObject("cloud:cache:whiteList:" + filterList.get(i).getFilterCode()));
+//                interfaceSet.addAll((Set<WhiteListFilter>) jedisUtil.getObject("pjm:cloud:cache:whiteList:" + filterList.get(i).getFilterCode()));
+                interfaceSet.addAll(nacosApiClient.getInterfaceNameSetByApplicationName(new WhiteListFilter().setFilterCode(applicationName)));
             }
-            if (CollectionUtils.isEmpty(interfaceSet)) {
-                for (int i = 0; i < filterList.size(); i++) {
-                    Set<WhiteListFilter> temp = nacosApiClient.getInterfaceNameSetByApplicationName(new WhiteListFilter().setFilterCode(userUtil.getReqApplicationName(exchange)));
-                    interfaceSet.addAll(temp);
-                    jedisUtil.setObject("cloud:cache:whiteList:" + userUtil.getReqApplicationName(exchange), temp, 3600000);
-                }
-//                interfaceSet = nacosApiClient.getInterfaceNameSetByApplicationName(new WhiteListFilter().setFilterCode(userUtil.getReqApplicationName(exchange)));
-            }
+//            if (CollectionUtils.isEmpty(interfaceSet)) {
+//                for (int i = 0; i < filterList.size(); i++) {
+//                    Set<WhiteListFilter> temp = nacosApiClient.getInterfaceNameSetByApplicationName(new WhiteListFilter().setFilterCode(userUtil.getReqApplicationName(exchange)));
+//                    interfaceSet.addAll(temp);
+//                    jedisUtil.setObject("pjm:cloud:cache:whiteList:" + userUtil.getReqApplicationName(exchange), temp, 3600000);
+//                }
+////                interfaceSet = nacosApiClient.getInterfaceNameSetByApplicationName(new WhiteListFilter().setFilterCode(userUtil.getReqApplicationName(exchange)));
+//            }
             List<WhiteListFilter> interFaceList = interfaceSet.stream().
-                    filter(item -> Pattern.matches(item.getFilterCode(), userUtil.getInterFaceName(exchange))).
+                    filter(item -> Pattern.matches(item.getFilterCode(), interfaceName)).
                     collect(Collectors.toList());
-            log.info(userUtil.getInterFaceName(exchange));
+            log.info(interfaceName);
             if (interFaceList.size() > 0) {
                 System.out.println("通过白名单");
                 return;

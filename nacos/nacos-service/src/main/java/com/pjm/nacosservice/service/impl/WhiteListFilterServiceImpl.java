@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pjm.common.aop.cache.RefreshCache;
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.common.util.common.UuidUtil;
@@ -88,36 +89,39 @@ public class WhiteListFilterServiceImpl extends ServiceImpl<WhiteListFilterMappe
     }
 
     @Override
+    @RefreshCache(key = "WhiteListFilter")
     public ResponseEntity<String> update(WhiteListFilter whiteListFilter) {
         whiteListFilterMapper.updateAllColumnById(whiteListFilter);
-        mqApiClient.add2Qunue(new MessageMq<>()
-                .setId("gateway-update."+UuidUtil.next())
-                .setExchangeName("pjm.topic2")
-                .setQueueName("gateway-update")
-                .setMessageBody(whiteListFilter));
+//        mqApiClient.add2Qunue(new MessageMq<>()
+//                .setId("gateway-update."+UuidUtil.next())
+//                .setExchangeName("pjm.topic2")
+//                .setQueueName("gateway-update")
+//                .setMessageBody(whiteListFilter));
         return ResponseEntity.success("success");
     }
     @Override
+    @RefreshCache(key = "WhiteListFilter")
     public ResponseEntity<String> add(List<WhiteListFilter> whiteListFilterList) {
         whiteListFilterList.forEach(item->{
             item.setId(UuidUtil.next());
         });
         insertBatch(whiteListFilterList);
-        mqApiClient.add2Qunue(new MessageMq<>()
-                .setId("gateway-add."+UuidUtil.next())
-                .setExchangeName("pjm.topic2")
-                .setQueueName("gateway-add")
-                .setMessageBody(whiteListFilterList));
+//        mqApiClient.add2Qunue(new MessageMq<>()
+//                .setId("gateway-add."+UuidUtil.next())
+//                .setExchangeName("pjm.topic2")
+//                .setQueueName("gateway-add")
+//                .setMessageBody(whiteListFilterList));
         return ResponseEntity.success("success");
     }
     @Override
+    @RefreshCache(key = "WhiteListFilter")
     public ResponseEntity<String> delete(WhiteListFilterExt whiteListFilterExt) {
         whiteListFilterMapper.deleteBatchIds(whiteListFilterExt.getIds());
-        mqApiClient.add2Qunue(new MessageMq<>()
-                .setId("gateway-delete."+UuidUtil.next())
-                .setExchangeName("pjm.topic2")
-                .setQueueName("gateway-delete")
-                .setMessageBody(whiteListFilterExt));
+//        mqApiClient.add2Qunue(new MessageMq<>()
+//                .setId("gateway-delete."+UuidUtil.next())
+//                .setExchangeName("pjm.topic2")
+//                .setQueueName("gateway-delete")
+//                .setMessageBody(whiteListFilterExt));
         return ResponseEntity.success("success");
     }
 }

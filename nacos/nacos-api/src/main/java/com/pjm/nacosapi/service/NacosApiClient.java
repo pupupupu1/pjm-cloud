@@ -1,5 +1,6 @@
 package com.pjm.nacosapi.service;
 
+import com.pjm.common.aop.cache.EnableCache;
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.nacosapi.entity.WhiteListFilter;
@@ -15,9 +16,12 @@ import java.util.Set;
 @Component
 @FeignClient("pjm-service-nacos")
 public interface NacosApiClient {
+
+//    @EnableCache(key = "WhiteListFilter",expirTime = 1000 * 60 * 60 * 24 * 15)
     @PostMapping("NacosApiClient/getApplicationNameSet")
     Set<WhiteListFilter> getApplicationNameSet();
 
+//    @EnableCache(key = "WhiteListFilter+$P0:filterCode", expirTime = 1000 * 60 * 60 * 24 * 15)
     @PostMapping("NacosApiClient/getInterfaceNameSetByApplicationName")
     Set<WhiteListFilter> getInterfaceNameSetByApplicationName(@RequestBody WhiteListFilter whiteListFilter);
 

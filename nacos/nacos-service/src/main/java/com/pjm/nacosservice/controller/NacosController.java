@@ -2,14 +2,17 @@ package com.pjm.nacosservice.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.pjm.common.aop.cache.EnableCache;
+import com.pjm.common.aop.cache.RefreshCache;
 import com.pjm.common.aop.log.StartLog;
 import com.pjm.common.entity.ResponseEntity;
+import com.pjm.common.service.AsyncService;
 import com.pjm.common.util.JedisUtil;
 import com.pjm.common.util.common.UuidUtil;
 import com.pjm.hello.service.HelloService;
 import com.pjm.msgstater.entity.Duanxin;
 import com.pjm.msgstater.service.EmailService;
 import com.pjm.msgstater.service.SmsService;
+import com.pjm.nacosservice.entity.WhiteListFilter;
 import com.pjm.rabbitmqapi.entity.MessageMq;
 import com.pjm.rabbitmqapi.entity.MqLocalMessage;
 import com.pjm.rabbitmqapi.service.MqApiClient;
@@ -17,15 +20,10 @@ import com.pjm.userapi.entity.UserApi;
 import com.pjm.userapi.service.UserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -44,6 +42,9 @@ public class NacosController {
     private MqApiClient mqApiClient;
     @Autowired
     private JedisUtil jedisUtil;
+
+    @Autowired
+    private AsyncService asyncService;
 
 
     @StartLog
@@ -107,9 +108,22 @@ public class NacosController {
     }
 
     @GetMapping("/testCache2")
-    @EnableCache(key = "testKey22")
-    public String testCache2() {
-        return "hello world22";
+    @EnableCache(key = "$P0+$P1")
+    public String testCache2(String name, String age) {
+        return name + age;
+    }
+
+    @GetMapping("/testCache4")
+    @EnableCache(key = "asfasdasd")
+    public Set<String> testCache4() {
+        return new HashSet<>();
+    }
+
+
+    @PostMapping("/testCache3")
+    @EnableCache(key = "$P0:id+$P0:filterCode")
+    public String testCache3(@RequestBody WhiteListFilter whiteListFilter) {
+        return "name:" + whiteListFilter.getId();
     }
 
     @PostMapping("sendMqMsg2DB")
@@ -118,6 +132,25 @@ public class NacosController {
         map.put("name", name);
         mqApiClient.insertMsg(new MqLocalMessage().setId("user." + UuidUtil.next()).setTopicName("pjm.topic2")
                 .setQueueName("user.queue").setContext(JSON.toJSONString(map)));
+        return "success";
+    }
+
+    @GetMapping("async")
+    public String async() throws InterruptedException {
+        for (int i = 0; i < 50; i++) {
+            int finalI = i;
+            asyncService.asyncInvoke(() -> {
+                Thread.sleep(1000);
+                log.info("异步打印：{}", finalI);
+            });
+        }
+        return "success";
+    }
+
+    @GetMapping("refreshCache")
+    @RefreshCache(key = "WhiteListFilter", sleepTime = 5000)
+    public String refreshCache() {
+        jedisUtil.keysS("WhiteListFilter");
         return "success";
     }
 }

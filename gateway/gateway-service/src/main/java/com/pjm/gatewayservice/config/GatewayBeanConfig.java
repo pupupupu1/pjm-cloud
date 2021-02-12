@@ -31,33 +31,35 @@ public class GatewayBeanConfig {
     @Value("gateway")
     private String prefix;
 
-    public GatewayBeanConfig(JedisUtil jedisUtil,NacosApiClient nacosApiClient) {
-        Set<WhiteListFilter> applicationNameSet=(Set<WhiteListFilter>) jedisUtil.getObject("cloud:cache:whiteList");
-        if (Objects.isNull(applicationNameSet)){
-            log.info("开始初始化白名单");
-            //初始化白名单
-            applicationNameSet = nacosApiClient.getApplicationNameSet();
-            jedisUtil.setObject("cloud:cache:whiteList", applicationNameSet);
-            WhiteListFilterExt query = new WhiteListFilterExt();
-            query.setPageNum(0).setPageSize(0);
-            query.setFilterType(2d);
-            List<WhiteListFilter> whiteListFilterList = nacosApiClient.getList(query).getData().getList();
-            if (!CollectionUtils.isEmpty(applicationNameSet)) {
-                applicationNameSet.forEach(item -> {
-                    Set<WhiteListFilter> reqMethodSet = new HashSet<>();
-                    whiteListFilterList.forEach(item2 -> {
-                        if (item2.getFilterParentId().equals(item.getId())) {
-                            reqMethodSet.add(item2);
-                        }
-                    });
-                    if (!CollectionUtils.isEmpty(reqMethodSet)) {
-                        jedisUtil.setObject("cloud:cache:whiteList:" + item.getFilterCode(), reqMethodSet);
-                    }
-                });
-            }
-        }else {
-            log.info("白名单保持缓存");
-        }
+    public GatewayBeanConfig(JedisUtil jedisUtil, NacosApiClient nacosApiClient) {
+        Set<WhiteListFilter> applicationNameSet = nacosApiClient.getApplicationNameSet();
+        log.info("{}",applicationNameSet);
+//        Set<WhiteListFilter> applicationNameSet=(Set<WhiteListFilter>) jedisUtil.getObject("cloud:cache:whiteList");
+//        if (Objects.isNull(applicationNameSet)){
+//            log.info("开始初始化白名单");
+//            //初始化白名单
+//            applicationNameSet = nacosApiClient.getApplicationNameSet();
+//            jedisUtil.setObject("cloud:cache:whiteList", applicationNameSet);
+//            WhiteListFilterExt query = new WhiteListFilterExt();
+//            query.setPageNum(0).setPageSize(0);
+//            query.setFilterType(2d);
+//            List<WhiteListFilter> whiteListFilterList = nacosApiClient.getList(query).getData().getList();
+//            if (!CollectionUtils.isEmpty(applicationNameSet)) {
+//                applicationNameSet.forEach(item -> {
+//                    Set<WhiteListFilter> reqMethodSet = new HashSet<>();
+//                    whiteListFilterList.forEach(item2 -> {
+//                        if (item2.getFilterParentId().equals(item.getId())) {
+//                            reqMethodSet.add(item2);
+//                        }
+//                    });
+//                    if (!CollectionUtils.isEmpty(reqMethodSet)) {
+//                        jedisUtil.setObject("cloud:cache:whiteList:" + item.getFilterCode(), reqMethodSet);
+//                    }
+//                });
+//            }
+//        }else {
+//            log.info("白名单保持缓存");
+//        }
     }
 
     @Bean

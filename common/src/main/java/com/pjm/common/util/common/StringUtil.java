@@ -1,5 +1,7 @@
 package com.pjm.common.util.common;
 
+import java.util.regex.Pattern;
+
 /**
  * String工具
  */
@@ -106,5 +108,10 @@ public class StringUtil {
      */
     public static String addSingleQuotes(String param) {
         return "\'" + param + "\'";
+    }
+
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 }
