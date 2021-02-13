@@ -46,7 +46,7 @@ public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
         String applicationName = userUtil.getReqApplicationName(exchange);
         String interfaceName = userUtil.getInterFaceName(exchange);
         if (!filterEnable) {
-            log.info("GatewayLoginFilter未开启");
+            log.info("GatewayWhiteListFilter未开启");
             if (this.next == null) {
                 return;
             } else {
@@ -66,7 +66,7 @@ public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
             Set<WhiteListFilter> interfaceSet = new HashSet<>();
             for (int i = 0; i < filterList.size(); i++) {
 //                interfaceSet.addAll((Set<WhiteListFilter>) jedisUtil.getObject("pjm:cloud:cache:whiteList:" + filterList.get(i).getFilterCode()));
-                interfaceSet.addAll(nacosApiClient.getInterfaceNameSetByApplicationName(new WhiteListFilter().setFilterCode(applicationName)));
+                interfaceSet.addAll(nacosApiClient.getInterfaceNameSetByApplicationName(new WhiteListFilter().setFilterCode(filterList.get(i).getFilterCode())));
             }
 //            if (CollectionUtils.isEmpty(interfaceSet)) {
 //                for (int i = 0; i < filterList.size(); i++) {

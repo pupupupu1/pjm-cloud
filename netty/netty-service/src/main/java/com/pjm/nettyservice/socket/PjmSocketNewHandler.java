@@ -42,6 +42,8 @@ public class PjmSocketNewHandler extends SimpleChannelInboundHandler<TextWebSock
     @Autowired
     private TalkCloseMessageResolver talkCloseMessageResolver;
     @Autowired
+    private SystemMessageResolver systemMessageResolver;
+    @Autowired
     private UserUtil userUtil;
     @Autowired
     private GatewayLoginFilter loginFilter;
@@ -62,6 +64,7 @@ public class PjmSocketNewHandler extends SimpleChannelInboundHandler<TextWebSock
         messaegResolverFactory4Pjm.registerResolver(talkRequestMessageResolver);
         messaegResolverFactory4Pjm.registerResolver(talkResponseMessageResolver);
         messaegResolverFactory4Pjm.registerResolver(talkCloseMessageResolver);
+        messaegResolverFactory4Pjm.registerResolver(systemMessageResolver);
     }
 
     @Override

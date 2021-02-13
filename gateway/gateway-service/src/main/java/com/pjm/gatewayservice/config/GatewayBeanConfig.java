@@ -32,8 +32,8 @@ public class GatewayBeanConfig {
     private String prefix;
 
     public GatewayBeanConfig(JedisUtil jedisUtil, NacosApiClient nacosApiClient) {
-        Set<WhiteListFilter> applicationNameSet = nacosApiClient.getApplicationNameSet();
-        log.info("{}",applicationNameSet);
+//        Set<WhiteListFilter> applicationNameSet = nacosApiClient.getApplicationNameSet();
+//        log.info("{}",applicationNameSet);
 //        Set<WhiteListFilter> applicationNameSet=(Set<WhiteListFilter>) jedisUtil.getObject("cloud:cache:whiteList");
 //        if (Objects.isNull(applicationNameSet)){
 //            log.info("开始初始化白名单");

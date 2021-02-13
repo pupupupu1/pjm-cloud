@@ -3,7 +3,7 @@ package com.pjm.nettyservice.socket;
 
 public enum MessageTypeEnum4Pjm {
 
-    EMPTY("1"), PEOPLE("2"), GROUP("3"), TALK_REQUEST("4"),TALK_RESPONSE("5"),TALK_CLOSE("6");
+    SYSTEM("0"),EMPTY("1"), PEOPLE("2"), GROUP("3"), TALK_REQUEST("4"),TALK_RESPONSE("5"),TALK_CLOSE("6");
 
 
     private String type;

@@ -55,7 +55,7 @@ public class GatewayInterceptFilter extends BaseGateWayAbsFilter {
     @Override
     public void doFilter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (!filterEnable) {
-            log.info("GatewayWhiteListFilter未开启");
+            log.info("GatewayInterceptFilter未开启");
             if (this.next == null) {
                 return;
             } else {

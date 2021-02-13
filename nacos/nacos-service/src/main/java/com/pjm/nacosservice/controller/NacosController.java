@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.pjm.common.aop.cache.EnableCache;
 import com.pjm.common.aop.cache.RefreshCache;
 import com.pjm.common.aop.log.StartLog;
+import com.pjm.common.entity.PjmCloudUserLbsUser;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.common.service.AsyncService;
 import com.pjm.common.util.JedisUtil;
@@ -20,6 +21,13 @@ import com.pjm.userapi.entity.UserApi;
 import com.pjm.userapi.service.UserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.NearQuery;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -152,5 +160,39 @@ public class NacosController {
     public String refreshCache() {
         jedisUtil.keysS("WhiteListFilter");
         return "success";
+    }
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+
+    @PostMapping("mongotest1")
+    public Object mongotest1() {
+//        PjmCloudUserLbsUser item = new PjmCloudUserLbsUser();
+////        item.setId(Long.parseLong(Math.random()+""));
+//        item.setName("ppp");
+//        item.setAddress("ooo");
+//        List<Double> doubles = new ArrayList<>();
+//        doubles.add(115.999567);
+//        doubles.add(28.681813);
+//        item.setLoc(doubles);
+//        mongoUserReposity.save(item);
+        Query query = new Query(Criteria.where("name").is("ppp"));
+        List<Double> doubles2 = new ArrayList<>();
+        doubles2.add(115.999568);
+        doubles2.add(28.681818);
+        Update update = Update.update("loc", doubles2);
+//        mongoTemplate.upsert(query, update, PjmCloudUserLbsUser.class);
+        return mongoTemplate.findAll(PjmCloudUserLbsUser.class);
+    }
+
+    @PostMapping("mongotest2")
+    public Object mongotest2() {
+        NearQuery near = NearQuery
+                .near(new GeoJsonPoint(105.309352, 28.85563))
+                .spherical(true)
+                .distanceMultiplier(6378137)
+                .maxDistance(1, Metrics.KILOMETERS);
+        return mongoTemplate.geoNear(near, PjmCloudUserLbsUser.class);
     }
 }
