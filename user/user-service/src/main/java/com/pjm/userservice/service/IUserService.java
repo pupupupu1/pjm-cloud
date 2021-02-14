@@ -38,4 +38,6 @@ public interface IUserService extends IService<User> {
     User updatePassword(User user);
 
     User ResetPassword(User user);
+
+    User updateMySelf(User user);
 }

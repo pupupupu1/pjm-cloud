@@ -2,6 +2,7 @@ package com.pjm.userservice.controller;
 
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
+import com.pjm.common.util.UserUtil;
 import com.pjm.common.util.common.UuidUtil;
 import com.pjm.userservice.entity.User;
 import com.pjm.userservice.entityExt.UserExt;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -24,6 +26,12 @@ import java.util.List;
 public class UserController {
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private UserUtil userUtil;
+
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * 登录授权
@@ -51,13 +59,18 @@ public class UserController {
 
     @ApiOperation("修改")
     @PostMapping("/edit")
-
     public ResponseEntity<User> edit(@RequestBody User user) {
         if (userService.updateById(user)) {
-            return new ResponseEntity<>(user);
+            return ResponseEntity.success(user);
         } else {
             return new ResponseEntity<>(500, "出错了");
         }
+    }
+
+    @ApiOperation("修改个人信息")
+    @PostMapping("/updateMySelf")
+    public ResponseEntity<User> updateMySelf(@RequestBody User user) {
+        return ResponseEntity.success(userService.updateMySelf(user));
     }
 
     @ApiOperation("删除")

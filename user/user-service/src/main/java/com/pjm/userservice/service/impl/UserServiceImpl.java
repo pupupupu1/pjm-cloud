@@ -278,4 +278,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return user;
     }
 
+    @Override
+    public User updateMySelf(User user) {
+        String userAccount = userUtil.getAccount(request);
+        UserExt quertDto = new UserExt();
+        quertDto.setUserAccount(userAccount);
+        User userTemp = listWithPage(quertDto, 0, 0).getList().get(0);
+        user.setId(userTemp.getId());
+        user.setEnabled(null);
+        user.setUserPassword(null);
+        user.setVersion(null);
+        updateById(user);
+        return user;
+    }
+
 }
