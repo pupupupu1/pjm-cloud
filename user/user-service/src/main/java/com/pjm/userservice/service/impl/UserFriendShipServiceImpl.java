@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pjm.common.aop.cache.EnableCache;
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.common.exception.CustomException;
@@ -146,15 +147,16 @@ public class UserFriendShipServiceImpl extends ServiceImpl<UserFriendShipMapper,
         PageInfo<UserFriendShip> pageInfo = new PageInfo<>(userFriendShips);
         List<UserFriendShipExt> userFriendShipExts = new LinkedList<>();
         userFriendShips.forEach(item -> {
-            //获取user信息，需要缓存(使用json字符串)
-            String userJson = jedisUtil.getJson("cloud:cache:info:" + item.getFriendUserId());
-            if (Objects.isNull(userJson)) {
-                //查询数据库(可能缓存击穿)
-                UserExt friend = userService.detailsUser(new User().setId(item.getFriendUserId()));
-                userJson = JSON.toJSONString(friend);
-                jedisUtil.setJson("cloud:cache:info:" + item.getFriendUserId(), userJson, 3600000);
-            }
-            User user = JSON.parseObject(userJson, User.class);
+//            //获取user信息，需要缓存(使用json字符串)
+//            String userJson = jedisUtil.getJson("cloud:cache:info:" + item.getFriendUserId());
+//            if (Objects.isNull(userJson)) {
+//                //查询数据库(可能缓存击穿)
+//                UserExt friend = userService.detailsUser(new User().setId(item.getFriendUserId()));
+//                userJson = JSON.toJSONString(friend);
+//                jedisUtil.setJson("cloud:cache:info:" + item.getFriendUserId(), userJson, 3600000);
+//            }
+//            User user = JSON.parseObject(userJson, User.class);
+            User user = userService.detailsUser(new User().setId(item.getFriendUserId()));
             UserFriendShipExt temp = JSON.parseObject(JSON.toJSONString(item), UserFriendShipExt.class);
             temp.setUser(user);
             userFriendShipExts.add(temp);

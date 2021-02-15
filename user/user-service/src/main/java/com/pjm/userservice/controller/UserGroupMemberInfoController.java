@@ -2,6 +2,7 @@ package com.pjm.userservice.controller;
 
 
 import com.pjm.common.entity.ResponseEntity;
+import com.pjm.userservice.entity.User;
 import com.pjm.userservice.entity.UserGroupMemberInfo;
 import com.pjm.userservice.entityExt.UserGroupMemberInfoExt;
 import com.pjm.userservice.service.IUserGroupMemberInfoService;
@@ -48,5 +49,10 @@ public class UserGroupMemberInfoController {
         return userGroupMemberInfoService.getUserListByGroupId(id);
     }
 
+    @ApiOperation("获取与我相关的入群申请审核列表")
+    @GetMapping("getTheReviewListOfGroupMembershipApplicationRelatedToMe")
+    public ResponseEntity<List<UserGroupMemberInfoExt>> getTheReviewListOfGroupMembershipApplicationRelatedToMe(){
+        return ResponseEntity.success(userGroupMemberInfoService.getTheReviewListOfGroupMembershipApplicationRelatedToMe());
+    }
 }
 

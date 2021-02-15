@@ -1,5 +1,6 @@
 package com.pjm.userapi.service;
 
+import com.pjm.common.aop.cache.EnableCache;
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.userapi.entity.*;
@@ -13,16 +14,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Component(value="userClient")
+@Component(value = "userClient")
 @FeignClient(name = "pjm-service-user")
 public interface UserClient {
     @GetMapping("/userApiClient/getUser")
     public UserApi getUser();
 
     @GetMapping("/userApiClient/initInfo")
+    @EnableCache(key = "$P0")
     public ResponseEntity<UserApiExt> initInfo(@RequestParam("account") String account);
 
     @PostMapping("/userApiClient/findUserByAccountOrTel")
+    @EnableCache(key = "$P0:userAccount+$P0:userTel")
     public ResponseEntity<UserApi> findUserByAccountOrTel(@RequestBody UserApi user);
 
     @PostMapping("/permissionApiClient/selectList")
@@ -36,4 +39,8 @@ public interface UserClient {
 
     @PostMapping("/userRoleApiClient/selectList")
     public ResponseEntity<PageVo<List<UserRoleApi>>> selectList(@RequestBody UserRoleApiExt userRoleExt);
+
+    @GetMapping("/userGroupApiClient/getUserListByGroupId")
+    @EnableCache(key = "userGroupMemberInfo+$P0", expirTime = 1000 * 60 * 2)
+    List<UserGroupMemberInfoApiExt> getUserListByGroupId(@RequestParam("id") String id);
 }

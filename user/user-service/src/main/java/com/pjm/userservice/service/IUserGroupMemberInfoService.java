@@ -2,6 +2,7 @@ package com.pjm.userservice.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.pjm.common.entity.ResponseEntity;
+import com.pjm.userservice.entity.User;
 import com.pjm.userservice.entity.UserGroupMemberInfo;
 import com.pjm.userservice.entityExt.UserGroupMemberInfoExt;
 
@@ -23,4 +24,6 @@ public interface IUserGroupMemberInfoService extends IService<UserGroupMemberInf
     ResponseEntity<String> removeFromGroup(UserGroupMemberInfoExt userGroupMemberInfoExt);
 
     ResponseEntity<List<UserGroupMemberInfoExt>> getUserListByGroupId(String groupId);
+
+    List<UserGroupMemberInfoExt> getTheReviewListOfGroupMembershipApplicationRelatedToMe();
 }

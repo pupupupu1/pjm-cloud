@@ -5,6 +5,8 @@ import com.pjm.common.util.JedisUtil;
 import com.pjm.nettyservice.socket.MessageTypeEnum4Pjm;
 import com.pjm.nettyservice.socket.PjmMsgEntity;
 import com.pjm.nettyservice.socket.PjmSocketNewHandler;
+import com.pjm.userapi.entity.UserApi;
+import com.pjm.userapi.service.UserClient;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.group.ChannelGroup;
@@ -15,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -22,6 +26,9 @@ import java.util.Objects;
 public class PeopleMessageResolver implements Resolver4Pjm {
     @Autowired
     private JedisUtil jedisUtil;
+    @Resource
+    private UserClient userClient;
+
     @Override
     public boolean support(PjmMsgEntity message) {
         return message.getAction().equals(MessageTypeEnum4Pjm.PEOPLE.getType());
@@ -39,11 +46,16 @@ public class PeopleMessageResolver implements Resolver4Pjm {
             return;
 //                throw new Exception("sourceAccount不存在");
         }
-        pjmMsgEntity.getHeader().put("msgTime",String.valueOf(System.currentTimeMillis()));
+        pjmMsgEntity.getHeader().put("msgTime", String.valueOf(System.currentTimeMillis()));
         Channel sourceChannel = PjmSocketNewHandler.CHANNEL_MAP.get(sourceChannenHshCode);
 
         String receiveAccount = pjmMsgEntity.getReceiveAccount();
         Integer receiveChannelHashCode = PjmSocketNewHandler.USER_MAP.get(receiveAccount);
+//        UserApi optionUser = userClient.findUserByAccountOrTel(new UserApi().setUserAccount(receiveAccount)).getData();
+        UserApi sourceUser = userClient.findUserByAccountOrTel(new UserApi().setUserAccount(sourceAccount)).getData();
+        Map<String,String> header=pjmMsgEntity.getHeader();
+//        header.put("optionUserInfo",JSON.toJSONString(optionUser));
+        header.put("sourceUserInfo",JSON.toJSONString(sourceUser));
         if (Objects.isNull(receiveChannelHashCode)) {
             //转存入消息队列模块
             sourceChannel.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(pjmMsgEntity)));

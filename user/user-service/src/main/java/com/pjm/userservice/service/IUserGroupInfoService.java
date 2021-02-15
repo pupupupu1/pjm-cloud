@@ -22,4 +22,5 @@ public interface IUserGroupInfoService extends IService<UserGroupInfo> {
     ResponseEntity<String> deleteGroup(String id);
     ResponseEntity<PageVo<List<UserGroupInfo>>> listGroup(UserGroupInfoExt userGroupInfoExt, Integer pageNum, Integer pageSize);
     List<UserGroupInfo> findGroupList(String searchKey);
+    UserGroupInfoExt details(String id);
 }

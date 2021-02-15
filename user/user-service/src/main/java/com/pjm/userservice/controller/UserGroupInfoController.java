@@ -45,6 +45,12 @@ public class UserGroupInfoController {
         return userGroupInfoService.deleteGroup(id);
     }
 
+    @ApiOperation("群聊详情")
+    @GetMapping("details/{id}")
+    public ResponseEntity<UserGroupInfo> details(@PathVariable("id") String id) {
+        return ResponseEntity.success(userGroupInfoService.selectById(id));
+    }
+
     @ApiOperation("自己的群聊列表")
     @PostMapping("listGroup")
     public ResponseEntity<PageVo<List<UserGroupInfo>>> listGroup(@RequestBody UserGroupInfoExt userGroupInfoExt) {
@@ -53,7 +59,7 @@ public class UserGroupInfoController {
 
     @ApiOperation("关键字检索群聊列表")
     @GetMapping("findGroupList/{searchKey}")
-    public ResponseEntity<List<UserGroupInfo>> findGroupList(@PathVariable("searchKey")String searchKey){
+    public ResponseEntity<List<UserGroupInfo>> findGroupList(@PathVariable("searchKey") String searchKey) {
         return ResponseEntity.success(userGroupInfoService.findGroupList(searchKey));
     }
 }

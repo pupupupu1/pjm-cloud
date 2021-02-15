@@ -1,5 +1,6 @@
 package com.pjm.userservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -111,5 +112,12 @@ public class UserGroupInfoServiceImpl extends ServiceImpl<UserGroupInfoMapper, U
         Wrapper<UserGroupInfo> wrapper = new EntityWrapper<>();
         wrapper.like(!StringUtils.isEmpty(searchKey), "user_group_number", searchKey).or().like(!StringUtils.isEmpty(searchKey), "user_group_name", searchKey);
         return selectList(wrapper);
+    }
+
+    @Override
+    public UserGroupInfoExt details(String id) {
+        UserGroupInfo userGroupInfo=selectById(id);
+        UserGroupInfoExt userGroupInfoExt= JSON.parseObject(JSON.toJSONString(userGroupInfo),UserGroupInfoExt.class);
+        return null;
     }
 }

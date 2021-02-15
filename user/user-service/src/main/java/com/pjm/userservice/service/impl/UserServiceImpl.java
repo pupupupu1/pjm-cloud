@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.pjm.common.aop.cache.EnableCache;
 import com.pjm.common.common.Constant;
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
@@ -223,6 +224,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    @EnableCache(key = "userInfo+$P0:id+$P0:userAccount")
     public UserExt detailsUser(User user) {
         if (StringUtils.isEmpty(user.getId())) {
             return initUser(user.getUserAccount()).getData();

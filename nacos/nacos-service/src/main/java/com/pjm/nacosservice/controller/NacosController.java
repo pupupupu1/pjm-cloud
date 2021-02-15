@@ -168,21 +168,20 @@ public class NacosController {
 
     @PostMapping("mongotest1")
     public Object mongotest1() {
-//        PjmCloudUserLbsUser item = new PjmCloudUserLbsUser();
-////        item.setId(Long.parseLong(Math.random()+""));
-//        item.setName("ppp");
-//        item.setAddress("ooo");
-//        List<Double> doubles = new ArrayList<>();
-//        doubles.add(115.999567);
-//        doubles.add(28.681813);
-//        item.setLoc(doubles);
-//        mongoUserReposity.save(item);
+        PjmCloudUserLbsUser item = new PjmCloudUserLbsUser();
+        item.setName("ppp");
+        item.setAddress("ooo");
+        List<Double> doubles = new ArrayList<>();
+        doubles.add(115.999567);
+        doubles.add(28.681813);
+        item.setLoc(doubles);
+        mongoTemplate.save(item);
         Query query = new Query(Criteria.where("name").is("ppp"));
         List<Double> doubles2 = new ArrayList<>();
         doubles2.add(115.999568);
         doubles2.add(28.681818);
         Update update = Update.update("loc", doubles2);
-//        mongoTemplate.upsert(query, update, PjmCloudUserLbsUser.class);
+        mongoTemplate.upsert(query, update, PjmCloudUserLbsUser.class);
         return mongoTemplate.findAll(PjmCloudUserLbsUser.class);
     }
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.pjm.userservice.entity.User;
+import com.pjm.userservice.entity.UserGroupInfo;
 import com.pjm.userservice.entity.UserGroupMemberInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,4 +26,5 @@ public class UserGroupMemberInfoExt extends UserGroupMemberInfo {
     private Integer pageSize = 10;
     private List<String> ids;
     private User user;
+    private UserGroupInfo userGroupInfo;
 }
