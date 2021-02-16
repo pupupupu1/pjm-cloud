@@ -4,9 +4,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
-public class ResponseEntity<T> {
+public class ResponseEntity<T> implements Serializable {
     private int code = 0;
     private String msg;
     private T data;

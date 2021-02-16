@@ -30,6 +30,8 @@ public class ScheduleJob extends Model<ScheduleJob> {
 
     @TableId(value = "id", type = IdType.INPUT)
     private String id;
+    @ApiModelProperty(value = "job名称")
+    private String jobName;
     @ApiModelProperty(value = "class路径")
     private String classPath;
     @ApiModelProperty(value = "方法名")
