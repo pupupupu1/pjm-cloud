@@ -12,6 +12,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class WhiteListFilterExt extends WhiteListFilter {
     private List<String> ids;
-    private Integer pageNum;
-    private Integer pageSize;
+    private Integer pageNum=1;
+    private Integer pageSize=10;
+    private List<WhiteListFilter> children;
 }

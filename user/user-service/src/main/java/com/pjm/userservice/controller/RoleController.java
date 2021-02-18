@@ -23,7 +23,8 @@ import java.util.List;
  */
 @Api(tags = {"角色"})
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/" +
+        "")
 public class RoleController {
     @Autowired
     private IRoleService roleService;

@@ -9,7 +9,7 @@
     </parent>
     <groupId>com.pjm</groupId>
     <artifactId>rabbitmq</artifactId>
-    <version>1</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>rabbitmq</name>
     <packaging>pom</packaging>
     <description>Demo project for Spring Boot</description>

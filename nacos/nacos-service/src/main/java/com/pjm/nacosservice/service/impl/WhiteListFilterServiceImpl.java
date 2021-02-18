@@ -1,5 +1,6 @@
 package com.pjm.nacosservice.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -44,7 +45,7 @@ public class WhiteListFilterServiceImpl extends ServiceImpl<WhiteListFilterMappe
     private MqApiClient mqApiClient;
 
     @Override
-    public ResponseEntity<PageVo<List<WhiteListFilter>>> getList(WhiteListFilterExt whiteListFilterExt,Integer pageNum,Integer pageSize) {
+    public ResponseEntity<PageVo<List<WhiteListFilter>>> getList(WhiteListFilterExt whiteListFilterExt, Integer pageNum, Integer pageSize) {
         if (pageNum > 0 && pageSize > 0) {
             PageHelper.startPage(pageNum, pageSize);
         }
@@ -63,7 +64,7 @@ public class WhiteListFilterServiceImpl extends ServiceImpl<WhiteListFilterMappe
             wrapper.andNew().like("filter_code", whiteListFilterExt.getFilterCode());
         }
         if (!StringUtils.isEmpty(whiteListFilterExt.getFilterType())) {
-            wrapper.andNew().eq("filter_type", whiteListFilterExt.getFilterType()+"");
+            wrapper.andNew().eq("filter_type", whiteListFilterExt.getFilterType() + "");
         }
         if (!StringUtils.isEmpty(whiteListFilterExt.getFilterParentId())) {
             wrapper.andNew().eq("filter_parent_id", whiteListFilterExt.getFilterParentId());
@@ -99,10 +100,11 @@ public class WhiteListFilterServiceImpl extends ServiceImpl<WhiteListFilterMappe
 //                .setMessageBody(whiteListFilter));
         return ResponseEntity.success("success");
     }
+
     @Override
     @RefreshCache(key = "WhiteListFilter")
     public ResponseEntity<String> add(List<WhiteListFilter> whiteListFilterList) {
-        whiteListFilterList.forEach(item->{
+        whiteListFilterList.forEach(item -> {
             item.setId(UuidUtil.next());
         });
         insertBatch(whiteListFilterList);
@@ -113,6 +115,7 @@ public class WhiteListFilterServiceImpl extends ServiceImpl<WhiteListFilterMappe
 //                .setMessageBody(whiteListFilterList));
         return ResponseEntity.success("success");
     }
+
     @Override
     @RefreshCache(key = "WhiteListFilter")
     public ResponseEntity<String> delete(WhiteListFilterExt whiteListFilterExt) {
@@ -123,5 +126,19 @@ public class WhiteListFilterServiceImpl extends ServiceImpl<WhiteListFilterMappe
 //                .setQueueName("gateway-delete")
 //                .setMessageBody(whiteListFilterExt));
         return ResponseEntity.success("success");
+    }
+
+    @Override
+    public PageVo<List<WhiteListFilterExt>> getTreeList(WhiteListFilterExt whiteListFilterExt, Integer pageNum, Integer pageSize) {
+        whiteListFilterExt.setFilterType(1d);
+        PageVo<List<WhiteListFilter>> pageVo = getList(whiteListFilterExt, pageNum, pageSize).getData();
+        List<WhiteListFilterExt> parentListExt = JSON.parseArray(JSON.toJSONString(pageVo.getList()), WhiteListFilterExt.class);
+        parentListExt.forEach(item -> {
+            WhiteListFilterExt queryDto = new WhiteListFilterExt();
+            queryDto.setFilterParentId(item.getId());
+            List<WhiteListFilter> childList = getList(queryDto, 0, 0).getData().getList();
+            item.setChildren(childList);
+        });
+        return new PageVo<>(pageNum, pageSize, pageVo.getTotal(), parentListExt);
     }
 }

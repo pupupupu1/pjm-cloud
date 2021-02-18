@@ -25,7 +25,7 @@ public interface UserClient {
     public ResponseEntity<UserApiExt> initInfo(@RequestParam("account") String account);
 
     @PostMapping("/userApiClient/findUserByAccountOrTel")
-    @EnableCache(key = "$P0:userAccount+$P0:userTel")
+    @EnableCache(key = "$P0:userAccount+$P0:userTel",expirTime = 1000*60)
     public ResponseEntity<UserApi> findUserByAccountOrTel(@RequestBody UserApi user);
 
     @PostMapping("/permissionApiClient/selectList")

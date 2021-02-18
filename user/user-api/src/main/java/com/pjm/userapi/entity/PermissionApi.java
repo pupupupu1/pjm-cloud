@@ -20,6 +20,7 @@ public class PermissionApi implements Serializable{
     private String id;
 
     private String permissionCode;
+    private String permissionTypeCode;
     private String permissionApplicationCode;
     private String permissionName;
 

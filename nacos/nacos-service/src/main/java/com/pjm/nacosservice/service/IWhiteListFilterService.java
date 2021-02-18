@@ -28,4 +28,6 @@ public interface IWhiteListFilterService extends IService<WhiteListFilter> {
     ResponseEntity<String> add( List<WhiteListFilter> whiteListFilterList);
 
     ResponseEntity<String> delete(WhiteListFilterExt whiteListFilterExt);
+
+    PageVo<List<WhiteListFilterExt>> getTreeList(WhiteListFilterExt whiteListFilterExt,Integer pageNum,Integer pageSize);
 }

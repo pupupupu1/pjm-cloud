@@ -30,7 +30,6 @@ public class RefreshCacheImpl {
         keys.forEach(key -> {
             jedisUtil.delKey(key);
         });
-
         Long startTime = System.currentTimeMillis();
         Object res = point.proceed();
         Long endTime = System.currentTimeMillis();

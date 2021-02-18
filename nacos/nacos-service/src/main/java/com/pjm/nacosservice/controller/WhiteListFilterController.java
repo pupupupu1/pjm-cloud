@@ -1,6 +1,7 @@
 package com.pjm.nacosservice.controller;
 
 
+import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.nacosservice.entity.WhiteListFilter;
 import com.pjm.nacosservice.entity.ext.WhiteListFilterExt;
@@ -43,5 +44,10 @@ public class WhiteListFilterController {
     public ResponseEntity<String> delete(@RequestBody WhiteListFilterExt whiteListFilterExt) {
         return whiteListFilterService.delete(whiteListFilterExt);
     }
-}
 
+    @ApiOperation("白名单树形列表")
+    @PostMapping("getTreeList")
+    public ResponseEntity<PageVo<List<WhiteListFilterExt>>> getTreeList(@RequestBody WhiteListFilterExt whiteListFilterExt) {
+        return ResponseEntity.success(whiteListFilterService.getTreeList(whiteListFilterExt, whiteListFilterExt.getPageNum(), whiteListFilterExt.getPageSize()));
+    }
+}
