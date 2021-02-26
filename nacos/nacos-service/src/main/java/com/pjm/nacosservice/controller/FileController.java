@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -72,5 +73,11 @@ public class FileController {
         System.out.println(stringBuilder.toString());
         return ResponseEntity.success(stringBuilder.toString());
 
+    }
+
+    @ApiOperation("通过base64上传图片")
+    @PostMapping("uploadByBase64")
+    public ResponseEntity<String> uploadByBase64(@RequestBody Map<String,String> map) throws IOException {
+        return ResponseEntity.success(fileUtil.saveBase64File(map.get("base64"), fileUploadPath, fileRequestPath));
     }
 }
