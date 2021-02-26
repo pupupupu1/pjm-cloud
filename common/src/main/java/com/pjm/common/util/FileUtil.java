@@ -1,9 +1,13 @@
 package com.pjm.common.util;
 
 import com.pjm.common.entity.FileInfo;
+import com.pjm.common.exception.PjmException;
+import com.pjm.common.util.common.StringUtil;
+import com.pjm.common.util.common.UuidUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import sun.swing.FilePane;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -15,6 +19,22 @@ import java.util.UUID;
 
 @Component
 public class FileUtil {
+    public String saveBase64File(String base64, String uploadPath, String requestPath) throws IOException {
+        if (StringUtils.isEmpty(base64)){
+            throw new PjmException(500,"空数据异常");
+        }
+        Calendar calendar = Calendar.getInstance();
+        String realPath = calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + calendar.get(Calendar.DATE) + "/";
+        String fileName = UuidUtil.next() + "." + Base64Utils.checkImageBase64Format(base64);
+        String finalPath = requestPath + "base64File/" + realPath + fileName;
+        File dir = new File(uploadPath + requestPath + "base64File/" + realPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        Base64Utils.GenerateImage(base64, uploadPath+finalPath);
+        return finalPath;
+    }
+
     public String saveFile(MultipartFile file, String uploadPath, String requestPath) throws IOException {
         String originalFilename = file.getOriginalFilename();
         String fileType = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
