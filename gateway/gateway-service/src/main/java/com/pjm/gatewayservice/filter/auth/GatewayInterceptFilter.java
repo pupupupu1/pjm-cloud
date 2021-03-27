@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -24,7 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//@Component
+@Component
 @RefreshScope
 @Slf4j
 public class GatewayInterceptFilter extends BaseGateWayAbsFilter {

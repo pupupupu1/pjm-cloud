@@ -67,12 +67,13 @@ public class UserGroupMemberInfoServiceImpl extends ServiceImpl<UserGroupMemberI
     @Override
     public ResponseEntity<String> agree2JoinGroup(UserGroupMemberInfo userGroupMemberInfo) {
         UserExt userExt = commonUtil.getUserInfo();
+        UserGroupMemberInfo info = selectById(userGroupMemberInfo.getId());
         //判断职位是否是管理员或者群主
         UserGroupMemberInfo queryRes = selectOne(new EntityWrapper<>(new UserGroupMemberInfo())
-                .eq("user_group_id", userGroupMemberInfo.getUserGroupId())
+                .eq("user_group_id", info.getUserGroupId())
                 .eq("user_group_member_id", userExt.getId()));
-        if ("2".equals(queryRes.getUserGroupMemberPosition())) {
-            throw new PjmException(500,"群权限不足");
+        if (Objects.isNull(queryRes) || "2".equals(queryRes.getUserGroupMemberPosition())) {
+            throw new PjmException(500, "群权限不足");
         }
         String id = userGroupMemberInfo.getId();
         UserGroupMemberInfo temp = new UserGroupMemberInfo()

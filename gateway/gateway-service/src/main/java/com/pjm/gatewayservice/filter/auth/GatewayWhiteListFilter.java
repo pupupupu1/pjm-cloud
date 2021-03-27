@@ -13,10 +13,12 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.context.ApplicationContext;
 import com.pjm.common.util.UserUtil;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ServerWebExchange;
 
 import javax.annotation.Resource;
+import javax.inject.Qualifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +27,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
-//@Component
+@Component
 @RefreshScope
 @Slf4j
 public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
@@ -37,6 +39,7 @@ public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
     private NacosApiClient nacosApiClient;
     @Value(value = "${com.pjm.filter.enable.white}")
     private boolean filterEnable;
+    @Resource(name = "gatewayLoginFilter")
     public BaseGateWayAbsFilter next;
     private Set<WhiteListFilter> applicationNameSet;
 
@@ -86,8 +89,9 @@ public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
             }
         }
         if (this.next == null) {
-            System.out.println("WhiteListFilter跳出责任链,抛出异常");
-            chain.filter(exchange);
+//            System.out.println("WhiteListFilter跳出责任链,抛出异常");
+//            chain.filter(exchange);
+            throw new CustomException("登陆异常");
         } else {
             next.doFilter(exchange, chain);
         }

@@ -62,15 +62,15 @@ public class GatewayBeanConfig {
 //        }
     }
 
-    @Bean
-    public GatewayInterceptFilter interceptFilter() {
-        return new GatewayInterceptFilter();
-    }
-
-    @Bean
-    public GatewayWhiteListFilter whiteListFilter() {
-        return new GatewayWhiteListFilter();
-    }
+//    @Bean
+//    public GatewayInterceptFilter interceptFilter() {
+//        return new GatewayInterceptFilter();
+//    }
+//
+//    @Bean
+//    public GatewayWhiteListFilter whiteListFilter() {
+//        return new GatewayWhiteListFilter();
+//    }
 
 //    @Bean
 //    @Order(-1)

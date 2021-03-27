@@ -34,8 +34,8 @@ public class ServerGatewayFilter implements GlobalFilter, Ordered {
         //跨域配置
 //        cros(exchange);
         log.info("ServerGatewayFilter filter");
-        gatewayLoginFilter.next = gatewayInterceptFilter;
-        gatewayWhiteListFilter.next = gatewayLoginFilter;
+//        gatewayLoginFilter.next = gatewayInterceptFilter;
+//        gatewayWhiteListFilter.next = gatewayLoginFilter;
         gatewayWhiteListFilter.doFilter(exchange, chain);
         return chain.filter(exchange);
     }

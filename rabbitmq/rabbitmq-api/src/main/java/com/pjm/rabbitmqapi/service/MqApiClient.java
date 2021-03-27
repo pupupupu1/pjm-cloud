@@ -20,4 +20,7 @@ public interface MqApiClient {
 
     @PostMapping("/mqApiClient/findEnableMsg2Send")
     public void findEnableMsg2Send();
+
+    @PostMapping("/mqApiClient/sendMsg4ErrorJob")
+    public void sendMsg4ErrorJob();
 }

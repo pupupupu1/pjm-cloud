@@ -23,11 +23,11 @@
 <!--            <artifactId>pjm-spring-boot-starter</artifactId>-->
 <!--            <version>1</version>-->
 <!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.pjm</groupId>-->
-<!--            <artifactId>hello</artifactId>-->
-<!--            <version>1</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.pjm</groupId>
+            <artifactId>msg-starter</artifactId>
+            <version>1</version>
+        </dependency>
         <!--Spring Boot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

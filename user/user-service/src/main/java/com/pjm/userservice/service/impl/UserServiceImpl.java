@@ -101,9 +101,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             // 设置RefreshToken，时间戳为当前时间戳，直接设置即可(不用先删后设，会覆盖已有的RefreshToken)
             String currentTimeMillis = String.valueOf(System.currentTimeMillis());
             //refresh的value设置为用户名
-            jedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + user.getUserAccount(), user.getUserAccount(), Integer.parseInt(refreshTokenExpireTime));
+            jedisUtil.setObject(Constant.PREFIX_SHIRO_REFRESH_TOKEN + user.getUserAccount(), currentTimeMillis, Integer.parseInt(refreshTokenExpireTime));
             // 从Header中Authorization返回AccessToken，时间戳为当前时间戳,登记的value设置为登录人用户名
-            String token = jwtUtil.sign(user.getUserAccount(), String.valueOf(System.currentTimeMillis()));
+            String token = jwtUtil.sign(user.getUserAccount(), currentTimeMillis);
             log.info("登录成功，{}", token);
             response.setHeader("Authorization", token);
             response.setHeader("Access-Control-Expose-Headers", "Authorization");

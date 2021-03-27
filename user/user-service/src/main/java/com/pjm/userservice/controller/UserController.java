@@ -86,7 +86,6 @@ public class UserController {
 
     @ApiOperation("用户列表")
     @PostMapping("/list")
-
     public ResponseEntity<PageVo<List<User>>> listUser(@RequestBody UserExt userExt) {
         return new ResponseEntity<>(userService.listWithPage(userExt, userExt.getPageNum(), userExt.getPageSize()));
     }

@@ -106,9 +106,11 @@ public class UserUtil {
             account = jwtUtil.getClaim(token, Constant.ACCOUNT);
             jwtUtil.verify(token);
             jedisUtil.expire(Constant.PREFIX_SHIRO_REFRESH_TOKEN + account, Integer.parseInt(refreshTokenExpireTime));
-        } catch (Exception e) {
+        } catch (TokenExpiredException e) {
             log.error("本次请求的token已经过期,判断refreshToken{}，异常是{}", token, e.getMessage());
             refreshToken(token, exchange);
+        }catch(Exception e){
+            throw new CustomException("认证异常"+e.getMessage());
         }
     }
 

@@ -70,7 +70,7 @@ public class PjmSocketNewHandler extends SimpleChannelInboundHandler<TextWebSock
     @Override
     public void channelRead0(ChannelHandlerContext context, TextWebSocketFrame msg) throws Exception {
 
-        log.info("收到客户端发来的一条信息，内容是{}", msg);
+        log.info("收到客户端发来的一条信息");
         //解析数据为websocket格式
         System.out.println(msg.text());
         ByteBuf byteBuf = msg.content();

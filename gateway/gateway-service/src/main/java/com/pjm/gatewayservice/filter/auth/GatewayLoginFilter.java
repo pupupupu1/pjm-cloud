@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 
+import javax.annotation.Resource;
 import java.util.Objects;
 
 @RefreshScope
@@ -25,6 +26,7 @@ public class GatewayLoginFilter extends BaseGateWayAbsFilter {
     private JwtUtil jwtUtil;
     @Value("${com.pjm.filter.enable.login}")
     private boolean filterEnable;
+    @Resource(name = "gatewayInterceptFilter")
     public BaseGateWayAbsFilter next;
     @Override
     public void doFilter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -35,18 +37,17 @@ public class GatewayLoginFilter extends BaseGateWayAbsFilter {
             } else {
                 next.doFilter(exchange, chain);
             }
-//            throw new CustomException("测试异常CustomException");
         }
         //验证登录状态
         String token=userUtil.getToken(exchange);
         if (StringUtils.isEmpty(token)){
             throw new CustomException("无效密钥，必填");
         }
-        if (!jwtUtil.verify(token)){
-            throw new CustomException("无效密钥，不合法");
-        }
+//        if (!jwtUtil.verify(token)){
+//            throw new CustomException("无效密钥，不合法");
+//        }
         userUtil.doLogin(exchange);
-        if (!Objects.isNull(next)){
+        if (Objects.nonNull(next)){
             next.doFilter(exchange,chain);
         }else {
             throw new CustomException("登录失效！");

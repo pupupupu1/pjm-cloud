@@ -95,7 +95,7 @@ public class JwtUtil {
      */
     public String sign(String account, String currentTimeMillis) {
         try {
-            jedisUtil.setObject(Constant.PREFIX_SHIRO_ACCESS_TOKEN+account,currentTimeMillis);
+
             // 帐号加JWT私钥加密
             String secret = account + Base64ConvertUtil.decode(encryptJWTKey);
             System.out.println(secret);
@@ -105,12 +105,14 @@ public class JwtUtil {
             System.out.println(date);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             System.out.println(algorithm);
-            // 附带account帐号信息（设置jwt不过期）
-            return JWT.create()
+            String token = JWT.create()
                     .withClaim(Constant.ACCOUNT, account)
                     .withClaim(Constant.CURRENT_TIME_MILLIS, currentTimeMillis)
                     .withExpiresAt(date)
                     .sign(algorithm);
+            jedisUtil.setObject(Constant.PREFIX_SHIRO_ACCESS_TOKEN + account, token);
+            // 附带account帐号信息（设置jwt不过期）
+            return token;
         } catch (UnsupportedEncodingException e) {
             log.error("JWTToken加密出现UnsupportedEncodingException异常:{}", e.getMessage());
             throw new CustomException("JWTToken加密出现UnsupportedEncodingException异常:" + e.getMessage());
