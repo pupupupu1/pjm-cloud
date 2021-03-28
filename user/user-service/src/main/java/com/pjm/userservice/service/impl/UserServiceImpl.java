@@ -90,6 +90,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if (userTemp == null) {
             throw new LoginException(500, "该帐号不存在(The account does not exist.)");
         }
+        if ("0".equals(userTemp.getEnabled())) {
+            throw new LoginException(500, "用户被限制登陆");
+        }
         // 密码进行AES解密
         String key = AesCipherUtil.deCrypto(userTemp.getUserPassword());
         // 因为密码加密是以帐号+密码的形式进行加密的，所以解密后的对比是帐号+密码

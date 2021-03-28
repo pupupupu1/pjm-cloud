@@ -9,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import com.pjm.common.aop.cache.RefreshCache;
 import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
+import com.pjm.common.exception.PjmException;
 import com.pjm.common.util.common.UuidUtil;
 import com.pjm.nacosservice.entity.WhiteListFilter;
 import com.pjm.nacosservice.entity.ext.WhiteListFilterExt;
@@ -26,6 +27,7 @@ import javax.annotation.Resource;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -119,12 +121,17 @@ public class WhiteListFilterServiceImpl extends ServiceImpl<WhiteListFilterMappe
     @Override
     @RefreshCache(key = "WhiteListFilter")
     public ResponseEntity<String> delete(WhiteListFilterExt whiteListFilterExt) {
+        List<WhiteListFilterExt> whiteListFilters = getTreeList(whiteListFilterExt, 0, 0).getList();
+        whiteListFilters.forEach(item -> {
+            List<WhiteListFilter> tempChilren = item.getChildren();
+            if (!CollectionUtils.isEmpty(tempChilren)) {
+//                throw new PjmException(500,"部分白名单存在子层级，无法删除，请先删除子层级");
+                //将子名单删除干净
+                List<String> childIds = tempChilren.stream().map(WhiteListFilter::getId).collect(Collectors.toList());
+                whiteListFilterMapper.deleteBatchIds(childIds);
+            }
+        });
         whiteListFilterMapper.deleteBatchIds(whiteListFilterExt.getIds());
-//        mqApiClient.add2Qunue(new MessageMq<>()
-//                .setId("gateway-delete."+UuidUtil.next())
-//                .setExchangeName("pjm.topic2")
-//                .setQueueName("gateway-delete")
-//                .setMessageBody(whiteListFilterExt));
         return ResponseEntity.success("success");
     }
 
