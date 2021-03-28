@@ -42,7 +42,7 @@
                 and parent_id=#{parentId, jdbcType=VARCHAR}
             </if>
             <if test="parentId == null">
-                and parent_id is null
+                and (parent_id is null or parend_id = '')
             </if>
         </where>
     </select>
