@@ -55,6 +55,7 @@ public class GatewayWhiteListFilter extends BaseGateWayAbsFilter {
             } else {
                 next.doFilter(exchange, chain);
             }
+            return;
 //            throw new CustomException("测试异常CustomException");
         }
 //        applicationNameSet = (Set<WhiteListFilter>) jedisUtil.getObject("pjm:cloud:cache:whiteList");

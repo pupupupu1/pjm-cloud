@@ -62,6 +62,7 @@ public class GatewayInterceptFilter extends BaseGateWayAbsFilter {
             } else {
                 next.doFilter(exchange, chain);
             }
+            return;
 //            throw new CustomException("测试异常CustomException");
         }
         System.out.println("InterceptFilter");

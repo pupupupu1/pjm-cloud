@@ -32,11 +32,12 @@ public class GatewayLoginFilter extends BaseGateWayAbsFilter {
     public void doFilter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (!filterEnable) {
             log.info("GatewayLoginFilter未开启");
-            if (this.next == null) {
+            if (Objects.isNull(this.next)) {
                 return;
             } else {
                 next.doFilter(exchange, chain);
             }
+            return;
         }
         //验证登录状态
         String token=userUtil.getToken(exchange);
