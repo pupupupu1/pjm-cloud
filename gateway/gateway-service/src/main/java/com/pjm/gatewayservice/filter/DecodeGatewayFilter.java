@@ -2,10 +2,14 @@ package com.pjm.gatewayservice.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.pjm.common.common.Constant;
+import com.pjm.common.util.JwtUtil;
+import com.pjm.common.util.common.StringUtil;
 import io.netty.buffer.ByteBufAllocator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -35,8 +39,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @Slf4j
 public class DecodeGatewayFilter implements GlobalFilter, Ordered {
 
+    @Autowired
+    private JwtUtil jwtUtil;
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+//        return chain.filter(exchange);
         return handleParameter(exchange, chain);
     }
 
@@ -57,6 +64,7 @@ public class DecodeGatewayFilter implements GlobalFilter, Ordered {
         ServerHttpRequest serverHttpRequest = exchange.getRequest();
         HttpMethod method = serverHttpRequest.getMethod();
         String contentType = serverHttpRequest.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
+        String token = serverHttpRequest.getHeaders().getFirst("Authorization");
         //post请求时，如果是文件上传之类的请求，不修改请求消息体
         if (method == HttpMethod.POST && (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(contentType)
                 || MediaType.APPLICATION_JSON_VALUE.equalsIgnoreCase(contentType))) {
@@ -86,7 +94,9 @@ public class DecodeGatewayFilter implements GlobalFilter, Ordered {
                     json = new JSONObject();
                 } else {
                     json = JSON.parseObject(bodyStr);//创建jsonObject对象
-                    json.put("age", "22");
+                    if (StringUtil.isNotBlank(token)) {
+//                        json.put("userAccount", jwtUtil.getClaim(token, Constant.ACCOUNT));
+                    }
                 }
                 // 转换回字符串
                 bodyStr = JSON.toJSONString(json);
@@ -125,6 +135,9 @@ public class DecodeGatewayFilter implements GlobalFilter, Ordered {
                     long contentLength = headers.getContentLength();
                     HttpHeaders httpHeaders = new HttpHeaders();
                     httpHeaders.putAll(super.getHeaders());
+                    if (StringUtil.isNotBlank(token)) {
+                        httpHeaders.add("user-account", jwtUtil.getClaim(token, Constant.ACCOUNT));
+                    }
                     if (contentLength > 0) {
                         httpHeaders.setContentLength(contentLength);
                     } else {
