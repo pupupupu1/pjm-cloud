@@ -151,7 +151,7 @@ public class DecodeGatewayFilter implements GlobalFilter, Ordered {
                     return bodyFlux;
                 }
             };
-
+//
             //封装request，传给下一级
             request.mutate().header(HttpHeaders.CONTENT_LENGTH, Integer.toString(bodyStr.length()));
             return chain.filter(exchange.mutate().request(request).build());
