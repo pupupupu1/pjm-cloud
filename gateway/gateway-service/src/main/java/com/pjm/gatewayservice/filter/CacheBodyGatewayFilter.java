@@ -29,7 +29,7 @@ import reactor.core.publisher.Mono;
 public class CacheBodyGatewayFilter implements Ordered, GlobalFilter {
 
     public static final String CACHE_REQUEST_BODY_OBJECT_KEY = "cachedRequestBodyObject";
-
+//
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         if (exchange.getRequest().getHeaders().getContentType() == null) {
