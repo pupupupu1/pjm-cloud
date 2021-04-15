@@ -2,6 +2,7 @@ package com.pjm.nettyservice.socket.resolver4pjm;
 
 import com.alibaba.fastjson.JSON;
 import com.pjm.common.util.JedisUtil;
+import com.pjm.common.util.common.UuidUtil;
 import com.pjm.nettyservice.socket.MessageTypeEnum4Pjm;
 import com.pjm.nettyservice.socket.PjmMsgEntity;
 import com.pjm.nettyservice.socket.PjmSocketNewHandler;
@@ -77,6 +78,7 @@ public class GroupMessageResolver implements Resolver4Pjm {
             if (Objects.isNull(receiveChannelHashCode)) {
                 //转存入消息队列模块
                 log.info("消息存入消息队列,接收人是{}", item);
+                header.put("id", sourceAccount+UuidUtil.next());
                 jedisUtil.rpush("pjm:im:receiveAccount:" + item, JSON.toJSONString(pjmMsgEntity));
             } else {
                 Channel receiveChannel = PjmSocketNewHandler.CHANNEL_MAP.get(receiveChannelHashCode);

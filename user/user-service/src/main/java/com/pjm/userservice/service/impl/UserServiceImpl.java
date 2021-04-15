@@ -245,7 +245,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Override
     public boolean logout(User user) {
-        user = findUserByAccountOrTel(new User().setId(userUtil.getAccount(request)));
+        user = findUserByAccountOrTel(new User().setUserAccount(userUtil.getAccount(request)));
         if (jedisUtil.exists(Constant.PREFIX_SHIRO_CACHE + user.getUserAccount())) {
             jedisUtil.delKey(Constant.PREFIX_SHIRO_CACHE + user.getUserAccount());
         }
@@ -261,7 +261,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new LoginException(500, "密码最多8位(Password up to 8 bits.)");
         }
         String pwd = user.getUserPassword();
-        user = findUserByAccountOrTel(new User().setId(userUtil.getAccount(request)));
+        user = findUserByAccountOrTel(new User().setUserAccount(userUtil.getAccount(request)));
         String dekey = AesCipherUtil.deCrypto(user.getUserPassword());
         if ((pwd + user.getUserAccount()).equals(dekey)) {
             throw new LoginException(500, "修改后密码不能和原密码重复");

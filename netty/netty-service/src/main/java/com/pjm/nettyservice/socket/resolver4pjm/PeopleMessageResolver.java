@@ -2,6 +2,7 @@ package com.pjm.nettyservice.socket.resolver4pjm;
 
 import com.alibaba.fastjson.JSON;
 import com.pjm.common.util.JedisUtil;
+import com.pjm.common.util.common.UuidUtil;
 import com.pjm.nettyservice.socket.MessageTypeEnum4Pjm;
 import com.pjm.nettyservice.socket.PjmMsgEntity;
 import com.pjm.nettyservice.socket.PjmSocketNewHandler;
@@ -56,6 +57,7 @@ public class PeopleMessageResolver implements Resolver4Pjm {
         Map<String,String> header=pjmMsgEntity.getHeader();
 //        header.put("optionUserInfo",JSON.toJSONString(optionUser));
         header.put("sourceUserInfo",JSON.toJSONString(sourceUser));
+        header.put("id", sourceAccount+ UuidUtil.next());
         if (Objects.isNull(receiveChannelHashCode)) {
             //转存入消息队列模块
             sourceChannel.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(pjmMsgEntity)));

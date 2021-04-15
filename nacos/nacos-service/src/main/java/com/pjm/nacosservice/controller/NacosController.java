@@ -31,6 +31,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Slf4j
@@ -54,6 +55,8 @@ public class NacosController {
     @Autowired
     private AsyncService asyncService;
 
+    @Autowired
+    private HttpServletRequest request;
 
     @StartLog
     @GetMapping("/service")
@@ -193,5 +196,10 @@ public class NacosController {
                 .distanceMultiplier(6378137)
                 .maxDistance(1, Metrics.KILOMETERS);
         return mongoTemplate.geoNear(near, PjmCloudUserLbsUser.class);
+    }
+
+    @PostMapping("gatewayModifyBodyTest1")
+    public String gatewayModifyBodyTest1(@RequestBody Map<String, String> req) {
+        return JSON.toJSONString(req);
     }
 }
