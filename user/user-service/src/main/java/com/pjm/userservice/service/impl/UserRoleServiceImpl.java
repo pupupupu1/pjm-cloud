@@ -63,7 +63,7 @@ public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> i
         userRoleWrapper.andNew().eq("user_id",userRoleExt.getUserId());
         delete(userRoleWrapper);
         for(String roleId:roleIdArray){
-            if(StringUtils.isEmpty(roleId)){
+            if(!StringUtils.isEmpty(roleId)){
                 UserRole userRole=new UserRole();
                 userRole.setId(UuidUtil.next());
                 userRole.setUserId(userRoleExt.getUserId());

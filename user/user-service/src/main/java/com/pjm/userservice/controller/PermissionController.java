@@ -10,10 +10,7 @@ import com.pjm.userservice.service.IPermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -63,6 +60,12 @@ public class PermissionController {
     @PostMapping("/ListWithPageWithChildren")
     public ResponseEntity<PageVo<List<PermissionExt>>> listWithPageWithChildren(@RequestBody PermissionExt permissionExt) {
         return new ResponseEntity<>(permissionService.selectwithpagewithchildren(permissionExt, permissionExt.getPageNum(), permissionExt.getPageSize()));
+    }
+
+    @ApiOperation("获取已有权限")
+    @GetMapping("/listByRoleId/{roleId}")
+    public ResponseEntity<List<String>> listByUserId(@PathVariable("roleId") String roleId) {
+        return new ResponseEntity<>(permissionService.listByRoleId(roleId));
     }
 }
 

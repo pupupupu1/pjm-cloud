@@ -75,7 +75,7 @@ public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper,
         rolePermissionWrapper.andNew().eq("role_id", rolePermissionExt.getRoleId());
         delete(rolePermissionWrapper);
         for (String permissionId : permissionIdArray) {
-            if (StringUtils.isEmpty(permissionId)) {
+            if (!StringUtils.isEmpty(permissionId)) {
                 RolePermission rolePermission = new RolePermission();
                 rolePermission.setId(UuidUtil.next());
                 rolePermission.setRoleId(rolePermissionExt.getRoleId());

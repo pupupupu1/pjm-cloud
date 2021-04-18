@@ -7,9 +7,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pjm.common.entity.PageVo;
 import com.pjm.userservice.entity.Permission;
+import com.pjm.userservice.entity.Role;
+import com.pjm.userservice.entity.RolePermission;
 import com.pjm.userservice.entityExt.PermissionExt;
 import com.pjm.userservice.mapper.PermissionMapper;
 import com.pjm.userservice.service.IPermissionService;
+import com.pjm.userservice.service.IRolePermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -81,5 +85,15 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
                 permission.getChildren().add(permissionExt);
             }
         }
+    }
+
+    @Autowired
+    private IRolePermissionService rolePermissionService;
+
+    @Override
+    public List<String> listByRoleId(String roleId) {
+        List<RolePermission> rolePermissions = rolePermissionService.finPermissionByRole(new Role().setId(roleId));
+        return new ArrayList<>(rolePermissions.stream().map(RolePermission::getPermissionId).collect(Collectors.toList()));
+
     }
 }

@@ -7,15 +7,19 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.pjm.common.entity.PageVo;
 import com.pjm.userservice.entity.Role;
+import com.pjm.userservice.entity.UserRole;
 import com.pjm.userservice.entityExt.RoleExt;
 import com.pjm.userservice.mapper.RoleMapper;
 import com.pjm.userservice.service.IRoleService;
+import com.pjm.userservice.service.IUserRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -51,5 +55,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         return new PageVo<>(pageNum, pageSize, pageInfo.getTotal(), roleList);
     }
 
-
+    @Autowired
+    private IUserRoleService userRoleService;
+    @Override
+    public PageVo<List<Role>> listByUserId(String userId) {
+        Wrapper<UserRole> wrapper = new EntityWrapper<>(new UserRole().setUserId(userId));
+        List<UserRole> userRoles = userRoleService.selectList(wrapper);
+        List<String> roleIds = userRoles.stream().map(UserRole::getRoleId).collect(Collectors.toList());
+        return listWithPage(new RoleExt().setIds(roleIds),0,0);
+    }
 }

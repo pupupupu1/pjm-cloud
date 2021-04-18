@@ -18,4 +18,6 @@ import java.util.List;
 public interface IRoleService extends IService<Role> {
     PageVo<List<Role>> listWithPage(RoleExt roleExt, Integer pageNum, Integer pageSize);
 
+    PageVo<List<Role>> listByUserId(String userId);
+
 }

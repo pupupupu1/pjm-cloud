@@ -29,4 +29,6 @@ public interface IPermissionService extends IService<Permission> {
      * @return
      */
     List<PermissionExt> convertMenuTree(List<PermissionExt> permissionExtList);
+
+    List<String> listByRoleId(String userId);
 }

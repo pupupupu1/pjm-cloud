@@ -10,10 +10,7 @@ import com.pjm.userservice.service.IRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -68,6 +65,11 @@ public class RoleController {
         return new ResponseEntity<>(roleService.listWithPage(roleExt, roleExt.getPageNum(), roleExt.getPageSize()));
     }
 
+    @ApiOperation("通过用户获取角色列表")
+    @GetMapping("/listByUserId/{userId}")
+    public ResponseEntity<List<Role>> listByUserId(@PathVariable("userId") String userId) {
+        return new ResponseEntity<>(roleService.listByUserId(userId).getList());
+    }
 
 }
 
