@@ -27,7 +27,7 @@ public class UserFriendShipController {
 
     @ApiOperation("申请添加好友")
     @PostMapping("request2AddFriends")
-    public ResponseEntity<String> d(@RequestBody UserFriendShip userFriendShip) {
+    public ResponseEntity<String> d(@RequestBody UserFriendShip userFriendShip) throws InterruptedException {
         return userFriendShipService.request2AddFriends(userFriendShip);
     }
 

@@ -1,39 +1,27 @@
-package com.pjm.nettyservice.api;
+package com.pjm.nettyservice.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.pjm.common.aop.cache.EnableCache;
-import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.common.util.JedisUtil;
 import com.pjm.nettyservice.socket.PjmMsgEntity;
 import com.pjm.nettyservice.socket.PjmSocketNewHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
 @Slf4j
+@Api("推送用户的控制器")
 @RestController
-@RequestMapping("nettyApiClient")
-public class NettyApiController {
+public class CallUserController {
     @Autowired
     private JedisUtil jedisUtil;
-
-    @ApiOperation("发送同步所有在线用户的地址进monggo的消息")
-    @GetMapping("sendSyncAllOnlineUserLocMsg")
-    public void sendSyncAllOnlineUserLocMsg() {
-        log.info("准备发送同步所有在线用户的地址进monggo的消息数据");
-        PjmMsgEntity msg = new PjmMsgEntity();
-        msg.setAction("0");
-        Map<String, String> header = new HashMap<>();
-        header.put("type", "quartz_loc_update");
-        msg.setHeader(header);
-        PjmSocketNewHandler.CHANNEL_GROUP.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(msg)));
-        log.info("发送同步所有在线用户的地址进monggo的消息完毕");
-    }
 
     @ApiOperation("推送用户有新的好友申请")
     @PostMapping("callUser4FriendAddRequest")

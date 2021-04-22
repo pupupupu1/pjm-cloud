@@ -10,9 +10,11 @@ import com.pjm.common.entity.PageVo;
 import com.pjm.common.entity.ResponseEntity;
 import com.pjm.common.exception.CustomException;
 import com.pjm.common.redis.Cache;
+import com.pjm.common.service.AsyncService;
 import com.pjm.common.util.JedisUtil;
 import com.pjm.common.util.UserUtil;
 import com.pjm.common.util.common.UuidUtil;
+import com.pjm.nettyapi.service.NettyClientApi;
 import com.pjm.userapi.entity.ext.UserApiExt;
 import com.pjm.userservice.entity.User;
 import com.pjm.userservice.entityExt.UserExt;
@@ -27,10 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,9 +60,9 @@ public class UserFriendShipServiceImpl extends ServiceImpl<UserFriendShipMapper,
 
     @Override
     public ResponseEntity<List<UserFriendShipExt>> applyList() {
-        List<UserFriendShip> userFriendShips=userFriendShipMapper.applyList(commonUtil.getUserInfo().getId());
-        List<UserFriendShipExt> res=userFriendShips.stream().map(item->{
-            UserFriendShipExt temp=JSON.parseObject(JSON.toJSONString(item),UserFriendShipExt.class);
+        List<UserFriendShip> userFriendShips = userFriendShipMapper.applyList(commonUtil.getUserInfo().getId());
+        List<UserFriendShipExt> res = userFriendShips.stream().map(item -> {
+            UserFriendShipExt temp = JSON.parseObject(JSON.toJSONString(item), UserFriendShipExt.class);
             //获取user信息，需要缓存(使用json字符串)
             String userJson = jedisUtil.getJson("cloud:cache:info:" + item.getUserId());
             if (Objects.isNull(userJson)) {
@@ -77,8 +78,13 @@ public class UserFriendShipServiceImpl extends ServiceImpl<UserFriendShipMapper,
         return ResponseEntity.success(res);
     }
 
+    @Resource
+    private NettyClientApi nettyClientApi;
+    @Autowired
+    private AsyncService asyncService;
+
     @Override
-    public ResponseEntity<String> request2AddFriends(UserFriendShip userFriendShip) {
+    public ResponseEntity<String> request2AddFriends(UserFriendShip userFriendShip) throws InterruptedException {
         //单方面添加好友
         UserExt userExt = commonUtil.getUserInfo();
         userFriendShip.setUserId(userExt.getId());
@@ -87,6 +93,14 @@ public class UserFriendShipServiceImpl extends ServiceImpl<UserFriendShipMapper,
         userFriendShip.setCreateTime(String.valueOf(System.currentTimeMillis()));
         //校验frienid的存在性
         userFriendShipMapper.insert(userFriendShip);
+        asyncService.asyncInvoke(() -> {
+            Map<String, String> info = new HashMap<>();
+            info.put("sourceUserAccount", userExt.getUserAccount());
+            info.put("optionUserAccount", userService.selectOne
+                    (new EntityWrapper<>(new User().
+                            setId(userFriendShip.getFriendUserId()))).getUserAccount());
+            nettyClientApi.callUser4FriendAddRequest(info);
+        });
         return ResponseEntity.success("success");
     }
 

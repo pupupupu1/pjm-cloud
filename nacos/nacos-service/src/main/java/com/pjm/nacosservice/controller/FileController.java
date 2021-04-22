@@ -65,7 +65,6 @@ public class FileController {
     @PostMapping("/uploadFiles")
     public ResponseEntity<String> upload(@RequestParam(value = "files") MultipartFile[] files) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-//        FileUtil fileUtil = new FileUtil();
         for (MultipartFile file : files) {
             String path = fileUtil.saveFile(file, fileUploadPath, fileRequestPath);
             stringBuilder.append(stringBuilder.length() > 0 ? ";" + path : path);

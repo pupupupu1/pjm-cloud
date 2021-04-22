@@ -8,9 +8,11 @@ import com.pjm.common.entity.ResponseEntity;
 import com.pjm.common.exception.CustomException;
 import com.pjm.common.exception.LoginException;
 import com.pjm.common.exception.PjmException;
+import com.pjm.common.service.AsyncService;
 import com.pjm.common.util.JedisUtil;
 import com.pjm.common.util.UserUtil;
 import com.pjm.common.util.common.UuidUtil;
+import com.pjm.nettyapi.service.NettyClientApi;
 import com.pjm.userservice.entity.User;
 import com.pjm.userservice.entity.UserGroupMemberInfo;
 import com.pjm.userservice.entityExt.UserExt;
@@ -23,10 +25,12 @@ import com.pjm.userservice.service.IUserService;
 import com.pjm.userservice.util.CommonUtil;
 import com.sun.scenario.effect.impl.sw.java.JSWEffectPeer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,15 +56,32 @@ public class UserGroupMemberInfoServiceImpl extends ServiceImpl<UserGroupMemberI
     private IUserService userService;
     @Autowired
     private IUserGroupInfoService userGroupInfoService;
+    @Resource
+    private NettyClientApi nettyClientApi;
+    @Autowired
+    private AsyncService asyncService;
 
     @Override
-    public ResponseEntity<String> applicationJoinGroup(UserGroupMemberInfo userGroupMemberInfo) {
+    public ResponseEntity<String> applicationJoinGroup(UserGroupMemberInfo userGroupMemberInfo) throws InterruptedException {
         UserExt userExt = commonUtil.getUserInfo();
         //单方面添加一条status为0的记录
         userGroupMemberInfo.setId(UuidUtil.next());
         userGroupMemberInfo.setUserGroupJoinStatus(0L);
         userGroupMemberInfo.setUserGroupMemberId(userExt.getId());
         insert(userGroupMemberInfo);
+        asyncService.asyncInvoke(() -> {
+            Map<String, String> info = new HashMap<>();
+            info.put("sourceUserAccount", userExt.getUserAccount());
+            //获取本群所有管理员和群主账号
+            List<UserGroupMemberInfoExt> userGroupMemberInfos = getUserListByGroupId(userGroupMemberInfo.getUserGroupId()).getData();
+            userGroupMemberInfos.removeIf(item -> "2".equals(item.getUserGroupMemberPosition()));
+            List<String> userAccounts = userGroupMemberInfos.stream().map(item -> {
+                return item.getUser().getUserAccount();
+            }).collect(Collectors.toList());
+            info.put("optionUserAccounts", StringUtils.join(userAccounts, ";"));
+            info.put("groupName", userGroupInfoService.selectById(userGroupMemberInfo.getUserGroupId()).getUserGroupName());
+            nettyClientApi.callUser4GroupAddRequest(info);
+        });
         return ResponseEntity.success("success");
     }
 

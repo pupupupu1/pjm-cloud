@@ -17,7 +17,7 @@ import java.util.List;
  * @since 2020-11-08
  */
 public interface IUserGroupMemberInfoService extends IService<UserGroupMemberInfo> {
-    ResponseEntity<String> applicationJoinGroup(UserGroupMemberInfo userGroupMemberInfo);
+    ResponseEntity<String> applicationJoinGroup(UserGroupMemberInfo userGroupMemberInfo) throws InterruptedException;
 
     ResponseEntity<String> agree2JoinGroup(UserGroupMemberInfo userGroupMemberInfo);
 

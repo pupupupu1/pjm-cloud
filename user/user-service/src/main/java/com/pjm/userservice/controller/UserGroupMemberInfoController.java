@@ -27,7 +27,7 @@ public class UserGroupMemberInfoController {
 
     @ApiOperation("申请加入指定群聊")
     @PostMapping("applicationJoinGroup")
-    public ResponseEntity<String> applicationJoinGroup(@RequestBody UserGroupMemberInfo userGroupMemberInfo) {
+    public ResponseEntity<String> applicationJoinGroup(@RequestBody UserGroupMemberInfo userGroupMemberInfo) throws InterruptedException {
         return userGroupMemberInfoService.applicationJoinGroup(userGroupMemberInfo);
     }
 
